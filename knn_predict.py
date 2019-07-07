@@ -76,7 +76,7 @@ def main():
 	#img_name = input('Input the image name to predict: ')
 	img_name=sys.argv[1]
 	img = openImage(img_name)
-	#showImage(img)
+	showImage(img)
 	#gaussian filtering
 	#img = cv2.blur(img,(5,5))
 	ret,img = cv2.threshold(img,130,255,cv2.THRESH_BINARY)
@@ -117,9 +117,10 @@ def main():
 				print('')
 			img = np.array(list_img[i])
 			#showImage(img)
+			print(img)
 			array = np.array(img)
 
-
+			print(array)
 			array = np.reshape(array, (1,np.product(array.shape)))
 			#showImage(list_img[i])
 			

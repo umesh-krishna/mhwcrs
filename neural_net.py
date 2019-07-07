@@ -15,17 +15,28 @@ import webbrowser
 from scipy import ndimage
 import segmentation as s
 import sys
+import image_processing as imp
+import platform
+import os
+
 
 def openImage(path):
-	img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
-	ret,img = cv2.threshold(img,130,255,cv2.THRESH_BINARY)
+	# img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
+	# ret,img = cv2.threshold(img,130,255,cv2.THRESH_BINARY)
+	"""using PIL"""
+	img = imp.load_image(path)
 	return img
 
+
 def showImage(img1):
-	cv2.imshow('image',img1)
-	cv2.waitKey()
-	cv2.destroyAllWindows()
-	
+	# cv2.imshow('image',img1)
+	# cv2.waitKey()
+	# cv2.destroyAllWindows()
+	if platform.system() == 'Windows':
+		os.system("powershell -c "+img1)
+	elif platform.system() == 'Linux':
+		os.system("xdg-open "+img1)
+
 def resize(img, x, y):
 	height, width = img.shape
 	try:
@@ -35,7 +46,7 @@ def resize(img, x, y):
 		print('error resizing...')
 
 def main():
-	sys.setrecursionlimit(9999)
+	sys.setrecursionlimit(999999)
 
 
 	dataset = pd.read_csv('dataset-1.csv')
@@ -84,7 +95,7 @@ def main():
 	model.add(Dense(29, activation='softmax'))#change this number to total no. of labels
 
 	model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
-	model.fit(X_train, Y_train, batch_size=32, nb_epoch=10, verbose=1)
+	model.fit(X_train, Y_train, batch_size=32, nb_epoch=1, verbose=1)
 	
 	score = model.evaluate(X_test, Y_test, verbose=0)
 	print(score)
@@ -93,17 +104,19 @@ def main():
 	def predict_images(model):
 		img_path=sys.argv[1]
 		#img_path = input('image path: ')
-		img = openImage(img_path)
-		ret,img = cv2.threshold(img,130,255,cv2.THRESH_BINARY_INV)
+		# img = openImage(img_path)
+		# ret,img = cv2.threshold(img,130,255,cv2.THRESH_BINARY_INV)
+		img = imp.load_image(img_path)
 		img = ndimage.median_filter(img, 3)
-		showImage(img)
+		# imp.show_image(img)
 		list_img = s._main(img)
+		# imp.show_image_array(list_img)
 		for i in range(len(list_img)):
 			h,w = list_img[i].shape
 			if h+w <= 5:
 				continue
 			img = list_img[i]
-			showImage(img)
+			imp.show_image_array(img)
 			img = resize(img,28,28)
 			img = np.array(img)
 			#print(img)

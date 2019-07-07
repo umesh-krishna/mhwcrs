@@ -50,6 +50,7 @@ def _main(img):
 	#showImage(img)
 	try:
 		height, width = img.shape
+		print(height, width)
 	except:
 		print('exception occured in segmentation.py')
 		return None
