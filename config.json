@@ -1,0 +1,5 @@
+{
+  "TEST_DATASETS_PATH": "test",
+  "TRAIN_DATASETS_PATH": "train",
+
+}
